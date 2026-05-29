@@ -224,11 +224,6 @@
       margin-top: 8px;
     }
 
-    .sidebar-lifelines {
-      padding-top: 10px;
-      border-top: 1px solid rgba(111, 227, 255, 0.18);
-    }
-
     .lifeline,
     .restart {
       min-height: 44px;
@@ -606,6 +601,11 @@
       </div>
 
       <div class="centerpiece">
+        <div class="lifelines" aria-label="Lifelines">
+          <button class="lifeline" id="fiftyBtn" type="button">50:50</button>
+          <button class="lifeline" id="audienceBtn" type="button">Ask Audience</button>
+        </div>
+
         <section class="question-box" aria-live="polite">
           <p class="prompt-label">Behavior category</p>
           <p class="question" id="questionText"></p>
@@ -630,10 +630,6 @@
     <aside class="ladder" aria-label="Game levels">
       <h2>Levels</h2>
       <div class="prize-list" id="prizeList"></div>
-      <div class="lifelines sidebar-lifelines" aria-label="Lifelines">
-        <button class="lifeline" id="fiftyBtn" type="button">50:50</button>
-        <button class="lifeline" id="audienceBtn" type="button">Audience</button>
-      </div>
     </aside>
   </main>
 
