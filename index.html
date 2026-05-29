@@ -516,6 +516,17 @@
       font-weight: 700;
     }
 
+    .centerpiece.result-mode .question-box,
+    .centerpiece.result-mode .answers,
+    .centerpiece.result-mode .audience,
+    .centerpiece.result-mode .message {
+      display: none;
+    }
+
+    .centerpiece.result-mode .restart {
+      margin-top: 0;
+    }
+
     .page-footer {
       padding: 0 20px 24px;
       color: var(--muted);
@@ -531,10 +542,6 @@
 
       .stage {
         min-height: auto;
-      }
-
-      .ladder {
-        order: -1;
       }
 
       .prize-list {
@@ -683,6 +690,7 @@
     const restartBtn = document.getElementById("restartBtn");
     const startScreen = document.getElementById("startScreen");
     const startBtn = document.getElementById("startBtn");
+    const centerpiece = document.querySelector(".centerpiece");
     const resultCard = document.getElementById("resultCard");
     const resultImage = document.getElementById("resultImage");
     const resultCaption = document.getElementById("resultCaption");
@@ -755,6 +763,7 @@
       fiftyBtn.disabled = false;
       audienceBtn.disabled = false;
       messageElement.textContent = "Choose an answer to continue.";
+      centerpiece.classList.remove("result-mode");
       resultCard.classList.remove("visible");
       resultImage.removeAttribute("src");
       resultCaption.textContent = "";
@@ -850,6 +859,9 @@
       const prize = state.score === 0 ? "0" : prizes[state.score - 1];
       const imageName = getResultImageName(state.score);
       messageElement.textContent = `Game over! Level reached: ${prize}. Correct answers: ${state.score}/${state.questions.length}.`;
+      audiencePanel.classList.remove("visible");
+      audienceBars.innerHTML = "";
+      centerpiece.classList.add("result-mode");
       resultImage.src = imageName;
       resultImage.alt = `Result for ${state.score} correct answers`;
       resultCaption.textContent = `Your score: ${state.score}/${state.questions.length}`;
