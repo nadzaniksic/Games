@@ -3,982 +3,357 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Millionaire Quiz</title>
+  <title>Essential Behaviours – Match Game</title>
   <style>
-    :root {
-      --navy: #07152f;
-      --panel: #10244a;
-      --panel-2: #173567;
-      --gold: #f5b84b;
-      --cyan: #6fe3ff;
-      --green: #43d17a;
-      --red: #ef5b5b;
-      --white: #f8fbff;
-      --muted: #aebbd3;
-      --disabled: #3f4d68;
-      --shadow: rgba(0, 0, 0, 0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
       min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--white);
-      background:
-        radial-gradient(circle at 50% 18%, rgba(111, 227, 255, 0.18), transparent 28rem),
-        linear-gradient(145deg, #040914 0%, var(--navy) 48%, #02050d 100%);
-    }
-
-    button {
-      font: inherit;
-    }
-
-    .start-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 10;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background:
-        radial-gradient(circle at 50% 32%, rgba(111, 227, 255, 0.22), transparent 24rem),
-        linear-gradient(145deg, #02050d 0%, #07152f 54%, #030814 100%);
-    }
-
-    .start-screen.hidden {
-      display: none;
-    }
-
-    .start-content {
-      width: min(560px, 100%);
-      text-align: center;
-      display: grid;
-      justify-items: center;
-      gap: 18px;
-    }
-
-    .millionaire-mark {
-      position: relative;
-      width: min(280px, 72vw);
-      aspect-ratio: 1;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      border: 3px solid var(--gold);
-      background:
-        radial-gradient(circle, rgba(245, 184, 75, 0.28) 0 12%, transparent 13% 100%),
-        repeating-conic-gradient(from 45deg, rgba(111, 227, 255, 0.82) 0deg 10deg, rgba(16, 36, 74, 0.92) 10deg 22deg);
-      box-shadow: 0 0 44px rgba(111, 227, 255, 0.42), inset 0 0 38px rgba(2, 5, 13, 0.85);
-    }
-
-    .millionaire-mark::before,
-    .millionaire-mark::after {
-      content: "";
-      position: absolute;
-      border: 2px solid rgba(245, 184, 75, 0.85);
-      border-radius: 50%;
-      inset: 14%;
-    }
-
-    .millionaire-mark::after {
-      inset: 30%;
-      border-color: rgba(111, 227, 255, 0.9);
-      transform: rotate(45deg);
-      border-radius: 8px;
-    }
-
-    .mark-core {
-      position: relative;
-      z-index: 1;
-      width: 35%;
-      aspect-ratio: 1;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: var(--navy);
-      background: linear-gradient(135deg, var(--cyan), var(--gold));
-      font-size: clamp(2.5rem, 12vw, 4.6rem);
-      font-weight: 900;
-    }
-
-    .start-title {
-      margin: 0;
-      font-size: clamp(2rem, 7vw, 4rem);
-      line-height: 1;
-    }
-
-    .start-subtitle {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    .start-button {
-      min-width: 190px;
-      min-height: 52px;
-      border: 2px solid var(--gold);
-      border-radius: 999px;
-      color: var(--navy);
-      background: linear-gradient(135deg, var(--gold), #ffe39b);
-      font-size: 1.05rem;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 0 28px rgba(245, 184, 75, 0.28);
-    }
-
-    .game {
-      width: min(1180px, 100%);
-      min-height: 100vh;
-      margin: 0 auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 270px;
-      gap: 18px;
-      align-items: stretch;
-    }
-
-    .stage,
-    .ladder {
-      border: 1px solid rgba(111, 227, 255, 0.22);
-      background: rgba(7, 21, 47, 0.82);
-      box-shadow: 0 20px 55px var(--shadow);
-    }
-
-    .stage {
-      min-height: calc(100vh - 40px);
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 18px;
-      border-radius: 8px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 220px;
-    }
-
-    .logo {
-      width: 54px;
-      height: 54px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: var(--navy);
-      background: linear-gradient(135deg, var(--cyan), var(--gold));
-      font-size: 1.45rem;
-      font-weight: 800;
-      box-shadow: 0 0 22px rgba(111, 227, 255, 0.34);
+      padding: 16px;
     }
 
     h1 {
-      margin: 0;
-      font-size: clamp(1.35rem, 3vw, 2.1rem);
-      letter-spacing: 0;
-    }
-
-    .subtitle {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .status {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .pill {
-      min-width: 108px;
-      padding: 9px 12px;
-      border: 1px solid rgba(245, 184, 75, 0.42);
-      border-radius: 999px;
-      color: var(--gold);
-      background: rgba(245, 184, 75, 0.08);
       text-align: center;
-      font-weight: 700;
+      font-size: 1.3rem;
+      color: #1a2e4a;
+      margin-bottom: 6px;
     }
 
-    .lifelines {
+    .instructions {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* ── TOPICS ROW ── */
+    .topics {
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
       justify-content: center;
-      margin-top: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
     }
 
-    .lifeline,
-    .restart {
-      min-height: 44px;
-      border: 1px solid rgba(111, 227, 255, 0.45);
-      border-radius: 999px;
-      color: var(--white);
-      background: linear-gradient(180deg, var(--panel-2), var(--panel));
-      padding: 10px 16px;
-      cursor: pointer;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-      transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
-    }
-
-    .lifeline:hover:not(:disabled),
-    .restart:hover {
-      transform: translateY(-1px);
-      border-color: var(--gold);
-    }
-
-    .lifeline:disabled,
-    .answer:disabled {
-      cursor: not-allowed;
-      opacity: 0.48;
-    }
-
-    .centerpiece {
-      display: grid;
-      gap: 18px;
-      margin-top: 6px;
-    }
-
-    .question-box {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      border: 0;
-      border-radius: 0;
-      clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0 50%);
-      padding: clamp(24px, 4vw, 42px) clamp(38px, 9vw, 92px);
-      background: linear-gradient(90deg, rgba(245, 184, 75, 0.92), rgba(111, 227, 255, 0.86), rgba(245, 184, 75, 0.92));
-      text-align: center;
-      box-shadow: 0 0 34px rgba(111, 227, 255, 0.2);
-    }
-
-    .question-box::before {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      clip-path: inherit;
-      pointer-events: none;
-      z-index: -2;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(111, 227, 255, 0.14), transparent 42%),
-        linear-gradient(180deg, rgba(16, 36, 74, 0.98), rgba(7, 21, 47, 0.98));
-    }
-
-    .prompt-label {
-      position: relative;
-      z-index: 1;
-      margin: 0 0 10px;
-      color: var(--cyan);
-      font-size: 0.95rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .question {
-      position: relative;
-      z-index: 1;
-      margin: 0;
-      min-height: 72px;
-      display: grid;
-      place-items: center;
-      font-size: clamp(1.25rem, 4vw, 2.25rem);
-      line-height: 1.22;
-      overflow-wrap: anywhere;
-    }
-
-    .answers {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .answer {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      min-height: 72px;
-      border: 0;
-      border-radius: 0;
-      clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
-      color: var(--white);
-      background: linear-gradient(90deg, rgba(245, 184, 75, 0.78), rgba(111, 227, 255, 0.72), rgba(245, 184, 75, 0.78));
-      padding: 13px clamp(20px, 5vw, 48px);
-      cursor: pointer;
-      text-align: left;
-      font-size: clamp(0.95rem, 2.2vw, 1.1rem);
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-
-    .answer::before {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      z-index: -1;
-      clip-path: inherit;
-      background: linear-gradient(180deg, #173567, #0d2148);
-      pointer-events: none;
-    }
-
-    .answer:hover:not(:disabled) {
-      transform: translateY(-1px);
-      filter: brightness(1.08);
-    }
-
-    .letter {
-      width: 34px;
-      height: 34px;
-      flex: 0 0 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: var(--navy);
-      background: var(--gold);
-      font-weight: 900;
-    }
-
-    .answer.correct {
-      background: linear-gradient(180deg, #1b8f4a, #106333);
-    }
-
-    .answer.correct::before {
-      background: linear-gradient(180deg, #1b8f4a, #106333);
-    }
-
-    .answer.wrong {
-      background: linear-gradient(180deg, #934044, #602024);
-    }
-
-    .answer.wrong::before {
-      background: linear-gradient(180deg, #934044, #602024);
-    }
-
-    .audience {
-      min-height: 124px;
-      border-radius: 8px;
-      padding: 14px;
-      background: rgba(2, 5, 13, 0.38);
-      border: 1px solid rgba(111, 227, 255, 0.18);
-      display: none;
-    }
-
-    .audience.visible {
-      display: block;
-    }
-
-    .audience-title {
-      margin: 0 0 12px;
-      color: var(--cyan);
-      font-weight: 700;
-    }
-
-    .bars {
-      display: grid;
-      gap: 8px;
-    }
-
-    .bar-row {
-      display: grid;
-      grid-template-columns: 140px minmax(0, 1fr) 44px;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .bar-name {
-      color: var(--white);
+    .topic-card {
+      background: #1a2e4a;
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
       font-size: 0.9rem;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .bar-track {
-      height: 12px;
-      overflow: hidden;
-      border-radius: 999px;
-      background: rgba(174, 187, 211, 0.2);
-    }
-
-    .bar-fill {
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--cyan), var(--gold));
-      transition: width 0.4s ease;
-    }
-
-    .message {
-      min-height: 44px;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      color: var(--muted);
       font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      min-width: 110px;
+      max-width: 160px;
+      flex: 1;
+      transition: transform .15s, box-shadow .15s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
     }
 
-    .ladder {
-      border-radius: 8px;
-      padding: 16px;
+    .topic-card.selected {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px #f7c948;
+    }
+
+    /* ── SUBTOPICS GRID ── */
+    .subtopics {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .ladder h2 {
-      margin: 0 0 6px;
-      font-size: 1rem;
-      color: var(--cyan);
-      text-align: center;
-    }
-
-    .level {
+    .sub-card {
+      background: #fff;
+      border: 2px solid #d0d8e4;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      color: var(--muted);
-      background: rgba(16, 36, 74, 0.7);
-      font-size: 0.92rem;
     }
 
-    .level.active {
-      color: var(--navy);
-      background: var(--gold);
-      font-weight: 800;
-    }
+    .sub-card .label { flex: 1; }
 
-    .level.done {
-      color: var(--green);
-    }
-
-    .level.wrong-level {
-      color: var(--white);
-      background: linear-gradient(180deg, #934044, #602024);
-      border: 1px solid rgba(239, 91, 91, 0.7);
-    }
-
-    .restart {
-      align-self: center;
-      min-width: 160px;
-      border-color: rgba(245, 184, 75, 0.55);
-    }
-
-    .result-card {
-      display: none;
-      gap: 12px;
-      justify-items: center;
-      padding: 18px;
-      border-radius: 12px;
-      border: 1px solid rgba(111, 227, 255, 0.22);
-      background: rgba(2, 5, 13, 0.42);
-      text-align: center;
-    }
-
-    .result-card.visible {
-      display: grid;
-    }
-
-    .result-card img {
-      width: min(100%, 340px);
-      border-radius: 12px;
-      border: 2px solid rgba(245, 184, 75, 0.45);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
-    }
-
-    .result-card p {
-      margin: 0;
-      color: var(--cyan);
+    .sub-card .badge {
+      font-size: 0.72rem;
       font-weight: 700;
+      background: #e8edf3;
+      color: #1a2e4a;
+      border-radius: 20px;
+      padding: 3px 9px;
+      white-space: nowrap;
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .centerpiece.result-mode .question-box,
-    .centerpiece.result-mode .answers,
-    .centerpiece.result-mode .audience,
-    .centerpiece.result-mode .message {
+    .sub-card.assigned {
+      border-color: #7b9cc4;
+      background: #eef3fa;
+    }
+
+    /* Results colouring */
+    .sub-card.correct  { border-color: #27ae60; background: #eafaf1; }
+    .sub-card.wrong    { border-color: #e74c3c; background: #fdf0ef; }
+    .sub-card.correct .badge { background: #27ae60; color: #fff; }
+    .sub-card.wrong   .badge { background: #e74c3c; color: #fff; }
+
+    /* ── BUTTONS ── */
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    button:active { opacity: .75; }
+
+    #btnCheck  { background: #1a2e4a; color: #fff; }
+    #btnReset  { background: #e0e6ee; color: #1a2e4a; }
+
+    /* ── SCORE BANNER ── */
+    #scoreBanner {
       display: none;
-    }
-
-    .centerpiece.result-mode .restart {
-      margin-top: 0;
-    }
-
-    .page-footer {
-      padding: 0 20px 24px;
-      color: var(--muted);
       text-align: center;
-      font-size: 0.95rem;
+      margin-top: 20px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a2e4a;
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
     }
 
-    @media (max-width: 900px) {
-      .game {
-        grid-template-columns: 1fr;
-        padding: 12px;
-      }
-
-      .stage {
-        min-height: auto;
-      }
-
-      .prize-list {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
+    /* ── LEGEND ── */
+    .legend {
+      display: none;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: #555;
     }
-
-    @media (max-width: 620px) {
-      .stage {
-        padding: 14px;
-      }
-
-      .topbar,
-      .brand,
-      .status {
-        justify-content: center;
-        text-align: center;
-      }
-
-      .answers {
-        grid-template-columns: 1fr;
-      }
-
-      .bar-row {
-        grid-template-columns: 94px minmax(0, 1fr) 40px;
-      }
-
-      .prize-list {
-        grid-template-columns: 1fr;
-      }
-    }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .dot.g { background: #27ae60; }
+    .dot.r { background: #e74c3c; }
   </style>
 </head>
 <body>
-  <section class="start-screen" id="startScreen" aria-label="Start game">
-    <div class="start-content">
-      <div class="millionaire-mark" aria-hidden="true">
-        <div class="mark-core">?</div>
-      </div>
-      <h1 class="start-title">Millionaire Quiz</h1>
-      <p class="start-subtitle">Choose the right category for each behavior.</p>
-      <button class="start-button" id="startBtn" type="button">START</button>
-    </div>
-  </section>
 
-  <main class="game" aria-label="Millionaire quiz game">
-    <section class="stage">
-      <div class="topbar">
-        <div class="brand">
-          <div class="logo" aria-hidden="true">?</div>
-          <div>
-            <h1>Millionaire Values Quiz</h1>
-            <p class="subtitle">Match each behavior to the right value.</p>
-          </div>
-        </div>
-        <div class="status">
-          <div class="pill" id="questionCounter">Question 1/15</div>
-          <div class="pill" id="scoreCounter">0 points</div>
-        </div>
-      </div>
+<h1>Essential Behaviours</h1>
+<p class="instructions">Tap a <strong>main topic</strong>, then tap the <strong>subtopics</strong> that belong to it.<br>Press <strong>Check Answers</strong> when done.</p>
 
-      <div class="centerpiece">
-        <div class="lifelines" aria-label="Lifelines">
-          <button class="lifeline" id="fiftyBtn" type="button">50:50</button>
-          <button class="lifeline" id="audienceBtn" type="button">Ask Audience</button>
-        </div>
+<!-- TOPIC BUTTONS -->
+<div class="topics" id="topicsRow"></div>
 
-        <section class="question-box" aria-live="polite">
-          <p class="prompt-label">Behavior category</p>
-          <p class="question" id="questionText"></p>
-        </section>
+<!-- SHUFFLED SUBTOPICS -->
+<div class="subtopics" id="subList"></div>
 
-        <div class="answers" id="answers"></div>
+<!-- ACTIONS -->
+<div class="actions">
+  <button id="btnCheck">Check Answers</button>
+  <button id="btnReset">Reset</button>
+</div>
 
-        <section class="audience" id="audiencePanel" aria-live="polite">
-          <p class="audience-title">Audience thinks:</p>
-          <div class="bars" id="audienceBars"></div>
-        </section>
+<div id="scoreBanner"></div>
+<div class="legend" id="legend">
+  <span><span class="dot g"></span> Correct</span>
+  <span><span class="dot r"></span> Incorrect</span>
+</div>
 
-        <div class="message" id="message">Choose an answer to continue.</div>
-        <section class="result-card" id="resultCard" aria-live="polite">
-          <img id="resultImage" alt="Quiz result illustration" />
-          <p id="resultCaption"></p>
-        </section>
-        <button class="restart" id="restartBtn" type="button">New Game</button>
-      </div>
-    </section>
+<script>
+  const DATA = [
+    {
+      id: 't1',
+      label: 'Have Courage',
+      subs: [
+        'Take risks and be entrepreneurial',
+        'Take decisions and have drive',
+        'Speak up and challenge',
+        'Learn from failures',
+        'Be open and curious',
+      ]
+    },
+    {
+      id: 't2',
+      label: 'Create Impact',
+      subs: [
+        'Take ownership',
+        'Set direction & pursue a common goal',
+        'Drive execution and deliver results',
+        'Empower and enable',
+        'Be persistent and resilient',
+      ]
+    },
+    {
+      id: 't3',
+      label: 'Actively Collaborate',
+      subs: [
+        'Take care of health and safety',
+        'Act as #teamRWE',
+        'Foster diversity and inclusion',
+        'Respect others',
+        'Seek and provide feedback',
+      ]
+    }
+  ];
 
-    <aside class="ladder" aria-label="Game levels">
-      <h2>Levels</h2>
-      <div class="prize-list" id="prizeList"></div>
-    </aside>
-  </main>
+  // Build lookup: sub text → correct topic id
+  const correctMap = {};
+  DATA.forEach(t => t.subs.forEach(s => { correctMap[s] = t.id; }));
 
-  <footer class="page-footer">Created by: Gonzalez Chaux Jaison and Nadza Niksic</footer>
+  // State
+  let selectedTopic = null;   // id of currently selected topic
+  let assignments   = {};     // sub text → assigned topic id
+  let checked       = false;
 
-  <script>
-    const categories = ["Have Courage", "Create Impact", "Actively Collaborate"];
-
-    const questionBank = [
-      { text: "Take risks & be entrepreneurial", answer: "Have Courage" },
-      { text: "Take decisions & have drive", answer: "Have Courage" },
-      { text: "Speak-up & challenge", answer: "Have Courage" },
-      { text: "Learn from failures", answer: "Have Courage" },
-      { text: "Be open & curious", answer: "Have Courage" },
-      { text: "Take ownership", answer: "Create Impact" },
-      { text: "Set direction & pursue a common goal", answer: "Create Impact" },
-      { text: "Drive execution & deliver results", answer: "Create Impact" },
-      { text: "Empower & enable", answer: "Create Impact" },
-      { text: "Be persistent & resilient", answer: "Create Impact" },
-      { text: "Take care of health & safety", answer: "Actively Collaborate" },
-      { text: "Act as #teamRWE", answer: "Actively Collaborate" },
-      { text: "Foster diversity & inclusion", answer: "Actively Collaborate" },
-      { text: "Respect others", answer: "Actively Collaborate" },
-      { text: "Seek & provide feedback", answer: "Actively Collaborate" }
-    ];
-
-    const prizes = [
-      "100", "200", "300", "500", "1,000",
-      "2,000", "4,000", "8,000", "16,000", "32,000",
-      "64,000", "125,000", "250,000", "500,000", "1,000,000"
-    ];
-
-    const state = {
-      questions: [],
-      currentIndex: 0,
-      score: 0,
-      locked: false,
-      usedFifty: false,
-      usedAudience: false,
-      hiddenOptions: new Set(),
-      levelResults: []
-    };
-
-    const questionText = document.getElementById("questionText");
-    const answersElement = document.getElementById("answers");
-    const messageElement = document.getElementById("message");
-    const questionCounter = document.getElementById("questionCounter");
-    const scoreCounter = document.getElementById("scoreCounter");
-    const fiftyBtn = document.getElementById("fiftyBtn");
-    const audienceBtn = document.getElementById("audienceBtn");
-    const audiencePanel = document.getElementById("audiencePanel");
-    const audienceBars = document.getElementById("audienceBars");
-    const prizeList = document.getElementById("prizeList");
-    const restartBtn = document.getElementById("restartBtn");
-    const startScreen = document.getElementById("startScreen");
-    const startBtn = document.getElementById("startBtn");
-    const centerpiece = document.querySelector(".centerpiece");
-    const resultCard = document.getElementById("resultCard");
-    const resultImage = document.getElementById("resultImage");
-    const resultCaption = document.getElementById("resultCaption");
-
-    function shuffle(items) {
-      const copy = [...items];
-      for (let index = copy.length - 1; index > 0; index--) {
-        const swapIndex = Math.floor(Math.random() * (index + 1));
-        [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  // ── Build topic buttons ──────────────────────────────────────────────────
+  const topicsRow = document.getElementById('topicsRow');
+  DATA.forEach(t => {
+    const btn = document.createElement('div');
+    btn.className = 'topic-card';
+    btn.textContent = t.label;
+    btn.dataset.id = t.id;
+    btn.addEventListener('click', () => {
+      if (checked) return;
+      if (selectedTopic === t.id) {
+        selectedTopic = null;
+        btn.classList.remove('selected');
+      } else {
+        // deselect old
+        document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+        selectedTopic = t.id;
+        btn.classList.add('selected');
       }
-      return copy;
-    }
+    });
+    topicsRow.appendChild(btn);
+  });
 
-    function createNaturalQuestionOrder(items) {
-      let bestOrder = shuffle(items);
-      let bestScore = scoreQuestionOrder(bestOrder);
+  // ── Build shuffled subtopic cards ────────────────────────────────────────
+  const allSubs = DATA.flatMap(t => t.subs);
+  // Fisher-Yates shuffle
+  for (let i = allSubs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allSubs[i], allSubs[j]] = [allSubs[j], allSubs[i]];
+  }
 
-      for (let attempt = 0; attempt < 600; attempt++) {
-        const candidate = shuffle(items);
-        const candidateScore = scoreQuestionOrder(candidate);
+  const subList = document.getElementById('subList');
 
-        if (candidateScore < bestScore) {
-          bestOrder = candidate;
-          bestScore = candidateScore;
-        }
+  allSubs.forEach(sub => {
+    const card = document.createElement('div');
+    card.className = 'sub-card';
+    card.dataset.sub = sub;
 
-        if (bestScore === 0) break;
+    const lbl = document.createElement('span');
+    lbl.className = 'label';
+    lbl.textContent = sub;
+
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = '—';
+
+    card.appendChild(lbl);
+    card.appendChild(badge);
+
+    card.addEventListener('click', () => {
+      if (checked) return;
+      if (!selectedTopic) return;
+
+      const topicLabel = DATA.find(t => t.id === selectedTopic).label;
+
+      if (assignments[sub] === selectedTopic) {
+        // toggle off
+        delete assignments[sub];
+        badge.textContent = '—';
+        card.classList.remove('assigned');
+      } else {
+        assignments[sub] = selectedTopic;
+        badge.textContent = topicLabel;
+        card.classList.add('assigned');
       }
+    });
 
-      return bestOrder;
-    }
+    subList.appendChild(card);
+  });
 
-    function scoreQuestionOrder(items) {
-      let score = 0;
+  // ── Check answers ────────────────────────────────────────────────────────
+  document.getElementById('btnCheck').addEventListener('click', () => {
+    if (checked) return;
+    checked = true;
 
-      for (let index = 1; index < items.length; index++) {
-        if (items[index].answer === items[index - 1].answer) score += 2;
+    let correct = 0;
+    document.querySelectorAll('.sub-card').forEach(card => {
+      const sub = card.dataset.sub;
+      const assigned = assignments[sub];
+      const badge = card.querySelector('.badge');
 
-        if (
-          index >= 2 &&
-          items[index].answer === items[index - 1].answer &&
-          items[index].answer === items[index - 2].answer
-        ) {
-          score += 80;
-        }
-
-        if (
-          index >= 5 &&
-          items[index].answer === items[index - 3].answer &&
-          items[index - 1].answer === items[index - 4].answer &&
-          items[index - 2].answer === items[index - 5].answer
-        ) {
-          score += 12;
-        }
+      if (assigned && assigned === correctMap[sub]) {
+        card.classList.add('correct');
+        correct++;
+      } else if (!assigned) {
+        // not assigned – mark wrong
+        card.classList.add('wrong');
+        const correctTopic = DATA.find(t => t.id === correctMap[sub]).label;
+        badge.textContent = '→ ' + correctTopic;
+        card.classList.remove('assigned');
+      } else {
+        card.classList.add('wrong');
+        const correctTopic = DATA.find(t => t.id === correctMap[sub]).label;
+        badge.textContent = '→ ' + correctTopic;
       }
+    });
 
-      return score;
-    }
+    // Deselect topics
+    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+    selectedTopic = null;
 
-    function startGame() {
-      startScreen.classList.add("hidden");
-      state.questions = createNaturalQuestionOrder(questionBank);
-      state.currentIndex = 0;
-      state.score = 0;
-      state.locked = false;
-      state.usedFifty = false;
-      state.usedAudience = false;
-      state.hiddenOptions = new Set();
-      state.levelResults = Array(questionBank.length).fill(null);
-      fiftyBtn.disabled = false;
-      audienceBtn.disabled = false;
-      messageElement.textContent = "Choose an answer to continue.";
-      centerpiece.classList.remove("result-mode");
-      resultCard.classList.remove("visible");
-      resultImage.removeAttribute("src");
-      resultCaption.textContent = "";
-      renderPrizeList();
-      renderQuestion();
-    }
+    const total = allSubs.length;
+    const banner = document.getElementById('scoreBanner');
+    banner.style.display = 'block';
+    banner.textContent = `You got ${correct} out of ${total} correct!`;
 
-    function currentQuestion() {
-      return state.questions[state.currentIndex];
-    }
+    const legend = document.getElementById('legend');
+    legend.style.display = 'flex';
+  });
 
-    function renderQuestion() {
-      const question = currentQuestion();
-      state.locked = false;
-      state.hiddenOptions = new Set();
-      audiencePanel.classList.remove("visible");
-      audienceBars.innerHTML = "";
+  // ── Reset ────────────────────────────────────────────────────────────────
+  document.getElementById('btnReset').addEventListener('click', () => {
+    assignments = {};
+    selectedTopic = null;
+    checked = false;
 
-      questionText.textContent = question.text;
-      questionCounter.textContent = `Question ${state.currentIndex + 1}/${state.questions.length}`;
-      scoreCounter.textContent = `${state.score} points`;
-      messageElement.textContent = "Which value does this behavior belong to?";
-      renderAnswers();
-      renderPrizeList();
-    }
+    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.sub-card').forEach(card => {
+      card.className = 'sub-card';
+      card.querySelector('.badge').textContent = '—';
+    });
 
-    function renderAnswers() {
-      answersElement.innerHTML = "";
-      categories.forEach((category, index) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "answer";
-        button.dataset.answer = category;
-        button.disabled = state.hiddenOptions.has(category) || state.locked;
-
-        const letter = document.createElement("span");
-        letter.className = "letter";
-        letter.textContent = String.fromCharCode(65 + index);
-
-        const text = document.createElement("span");
-        text.textContent = category;
-
-        button.append(letter, text);
-        button.addEventListener("click", () => selectAnswer(category, button));
-        answersElement.appendChild(button);
-      });
-    }
-
-    function selectAnswer(selectedAnswer, selectedButton) {
-      if (state.locked) return;
-
-      state.locked = true;
-      const correctAnswer = currentQuestion().answer;
-      const isCorrect = selectedAnswer === correctAnswer;
-      const answerButtons = [...answersElement.querySelectorAll(".answer")];
-
-      answerButtons.forEach((button) => {
-        button.disabled = true;
-        if (button.dataset.answer === correctAnswer) {
-          button.classList.add("correct");
-        }
-      });
-
-      if (!isCorrect) {
-        state.levelResults[state.currentIndex] = "wrong";
-        selectedButton.classList.add("wrong");
-        renderPrizeList();
-        messageElement.textContent = `Incorrect. The correct answer is ${correctAnswer}. Next question coming up.`;
-        advanceOrFinish(1800);
-        return;
-      }
-
-      state.levelResults[state.currentIndex] = "correct";
-      state.score += 1;
-      scoreCounter.textContent = `${state.score} points`;
-      renderPrizeList();
-
-      messageElement.textContent = "Correct! Next question coming up.";
-      advanceOrFinish(1100);
-    }
-
-    function advanceOrFinish(delay) {
-      if (state.currentIndex === state.questions.length - 1) {
-        finishGame();
-        return;
-      }
-
-      state.currentIndex += 1;
-      setTimeout(renderQuestion, delay);
-    }
-
-    function finishGame() {
-      const prize = state.score === 0 ? "0" : prizes[state.score - 1];
-      const imageName = getResultImageName(state.score);
-      messageElement.textContent = `Game over! Level reached: ${prize}. Correct answers: ${state.score}/${state.questions.length}.`;
-      audiencePanel.classList.remove("visible");
-      audienceBars.innerHTML = "";
-      centerpiece.classList.add("result-mode");
-      resultImage.src = imageName;
-      resultImage.alt = `Result for ${state.score} correct answers`;
-      resultCaption.textContent = `Your score: ${state.score}/${state.questions.length}`;
-      resultCard.classList.add("visible");
-      renderPrizeList();
-    }
-
-    function getResultImageName(score) {
-      if (score <= 3) return "0_3.png";
-      if (score <= 6) return "4-6.png";
-      if (score <= 9) return "7-9.png";
-      if (score <= 11) return "10-11.png";
-      if (score <= 13) return "12-13.png";
-      if (score === 14) return "14.png";
-      return "15.png";
-    }
-
-    function useFifty() {
-      if (state.usedFifty || state.locked) return;
-
-      const correctAnswer = currentQuestion().answer;
-      const wrongAnswers = categories.filter((category) => category !== correctAnswer);
-      const removed = shuffle(wrongAnswers).slice(0, 1);
-      state.hiddenOptions = new Set(removed);
-      state.usedFifty = true;
-      fiftyBtn.disabled = true;
-      messageElement.textContent = "50:50 removed one wrong answer.";
-      renderAnswers();
-    }
-
-    function useAudience() {
-      if (state.usedAudience || state.locked) return;
-
-      state.usedAudience = true;
-      audienceBtn.disabled = true;
-      audiencePanel.classList.add("visible");
-      renderAudience();
-      messageElement.textContent = "The audience has voted.";
-    }
-
-    function renderAudience() {
-      const correctAnswer = currentQuestion().answer;
-      const visibleCategories = categories.filter((category) => !state.hiddenOptions.has(category));
-      const correctPercent = visibleCategories.length === 2 ? randomBetween(68, 86) : randomBetween(52, 76);
-      let remaining = 100 - correctPercent;
-      const results = {};
-
-      visibleCategories.forEach((category) => {
-        results[category] = category === correctAnswer ? correctPercent : 0;
-      });
-
-      const wrongVisible = visibleCategories.filter((category) => category !== correctAnswer);
-      wrongVisible.forEach((category, index) => {
-        const value = index === wrongVisible.length - 1 ? remaining : randomBetween(8, Math.max(8, remaining - 8));
-        results[category] = value;
-        remaining -= value;
-      });
-
-      categories.forEach((category) => {
-        if (state.hiddenOptions.has(category)) results[category] = 0;
-      });
-
-      audienceBars.innerHTML = "";
-      categories.forEach((category) => {
-        const row = document.createElement("div");
-        row.className = "bar-row";
-
-        const name = document.createElement("div");
-        name.className = "bar-name";
-        name.textContent = category;
-
-        const track = document.createElement("div");
-        track.className = "bar-track";
-
-        const fill = document.createElement("div");
-        fill.className = "bar-fill";
-        fill.style.width = `${results[category]}%`;
-        track.appendChild(fill);
-
-        const percent = document.createElement("div");
-        percent.textContent = `${results[category]}%`;
-
-        row.append(name, track, percent);
-        audienceBars.appendChild(row);
-      });
-    }
-
-    function renderPrizeList() {
-      prizeList.innerHTML = "";
-      prizes.slice().reverse().forEach((prize, reverseIndex) => {
-        const levelIndex = prizes.length - 1 - reverseIndex;
-        const item = document.createElement("div");
-        item.className = "level";
-        const result = state.levelResults[levelIndex];
-        if (result === "correct") item.classList.add("done");
-        if (result === "wrong") item.classList.add("wrong-level");
-        if (levelIndex === state.currentIndex && !result) item.classList.add("active");
-
-        const number = document.createElement("span");
-        number.textContent = `${levelIndex + 1}.`;
-
-        const amount = document.createElement("span");
-        amount.textContent = prize;
-
-        item.append(number, amount);
-        prizeList.appendChild(item);
-      });
-    }
-
-    function randomBetween(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    fiftyBtn.addEventListener("click", useFifty);
-    audienceBtn.addEventListener("click", useAudience);
-    restartBtn.addEventListener("click", startGame);
-    startBtn.addEventListener("click", startGame);
-
-    questionText.textContent = "Click START to begin the game.";
-    renderAnswers();
-    renderPrizeList();
-  </script>
+    document.getElementById('scoreBanner').style.display = 'none';
+    document.getElementById('legend').style.display = 'none';
+  });
+</script>
 </body>
 </html>
